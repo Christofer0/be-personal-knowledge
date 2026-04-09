@@ -24,29 +24,25 @@ const app = new Elysia()
       docs: '/swagger'
     };
   })
-
-  // 🔥 INI YANG BARU
-  .group('/api', (app) =>
-    app
-      .use(projectController)
-      .use(taskController)
-      .use(noteController)
-      .use(tagController)
-      .use(chartController)
-  )
-
+  .use(projectController)
+  .use(taskController)
+  .use(noteController)
+  .use(tagController)
+  .use(chartController)
   .onError(({ code, error, set }) => {
     if (code === 'NOT_FOUND') {
       set.status = 404;
       return { error: 'Route not found' };
     }
-
+    
+    // Set 400 for validation errors or explicit business errors
     set.status = 400;
     return { error: (error as any)?.message || 'Internal Server Error' };
-  })
 
+  })
   .listen(process.env.PORT || 3000);
 
 console.log(
   `🦊 Elysia berjalan di ${app.server?.hostname}:${app.server?.port}`
 );
+ 
